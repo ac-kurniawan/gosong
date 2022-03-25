@@ -54,7 +54,7 @@ func (a *Application) AddControllers(name string, controller interface{}) {
 	a.controllers = append(a.controllers, buffer)
 }
 
-// AddProviders register providers/service
+// AddProviders register providers/service/repository
 func (a *Application) AddProviders(name string, provider interface{}) {
 	for _, tag := range a.findTag(provider) {
 		result := a.findDepenciesByName(tag.Tag)

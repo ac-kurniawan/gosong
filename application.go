@@ -80,6 +80,7 @@ func (a *Application) AddComponents(name string, component interface{}) {
 
 func (a *Application) findDepenciesByName(name string) interface{} {
 	merge := []Dependency{}
+	merge = append(merge, GlobalDependencies...)
 	merge = append(merge, a.components...)
 	merge = append(merge, a.providers...)
 	var found Dependency

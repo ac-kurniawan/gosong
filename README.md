@@ -44,4 +44,4 @@ func main() {
 ## Examples
 
 1. [Simple example](https://github.com/ac-kurniawan/gosong/tree/main/example/simple)
-2. [REST API]()
+2. [REST API](https://github.com/ac-kurniawan/gosong/tree/main/example/http)

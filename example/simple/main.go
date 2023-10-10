@@ -12,15 +12,18 @@ type Input struct {
 }
 
 type Sum struct {
-	Input `import:"Input"`
+	Name   string
+	*Input `import:"Input"`
 }
 
 func (s *Sum) Calc() {
+	fmt.Printf("Name = %s\n", s.Name)
+
 	fmt.Printf("%d + %d = %d\n", s.A, s.B, s.A+s.B)
 }
 
 type Multiply struct {
-	Input `import:"Input"`
+	*Input `import:"Input"`
 }
 
 func (m *Multiply) Calc() {
@@ -28,20 +31,33 @@ func (m *Multiply) Calc() {
 }
 
 func main() {
-	gosong.AddGlobalComponent("Input", Input{
+	// defining global component
+	gosong.AddGlobalComponent("Input", &Input{
 		1, 2,
 	})
 
+	// define Apps
 	CalculatorApplication := gosong.Application{
 		Name: "CalculatorApplication",
 	}
 
-	sum := Sum{}
-	multiply := Multiply{}
-	CalculatorApplication.AddControllers("Sum", &sum)
-	CalculatorApplication.AddControllers("Multiply", &multiply)
-	CalculatorApplication.AddEntries(sum.Calc)
-	CalculatorApplication.AddEntries(multiply.Calc)
+	// or you can use Singleton as well
+	//CalculatorApplication.AddSingletons("Input", &Input{
+	//	1, 2,
+	//})
 
+	// pre-define struct
+	sum := Sum{Name: "john doe"}
+	multiply := Multiply{}
+
+	// register singleton
+	CalculatorApplication.AddSingleton("Sum", &sum)
+	CalculatorApplication.AddSingleton("Multiply", &multiply)
+
+	// add entry point of apps
+	CalculatorApplication.AddEntry(sum.Calc)
+	CalculatorApplication.AddEntry(multiply.Calc)
+
+	// Run Apps
 	gosong.RunApplications(CalculatorApplication)
 }

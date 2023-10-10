@@ -32,13 +32,13 @@ func (a *Application) Run() {
 	}
 }
 
-// AddEntries controller entries or route setting
-func (a *Application) AddEntries(entry func()) {
+// AddEntry controller entries or route setting
+func (a *Application) AddEntry(entry func()) {
 	a.entries = append(a.entries, entry)
 }
 
-// AddControllers register controller/resolver/consumer
-func (a *Application) AddControllers(name string, controller interface{}) {
+// AddController register controller/resolver/consumer
+func (a *Application) AddController(name string, controller interface{}) {
 	for _, tag := range a.findTag(controller) {
 		result := a.findDependenciesByName(tag.Tag)
 
@@ -53,8 +53,8 @@ func (a *Application) AddControllers(name string, controller interface{}) {
 	a.controllers = append(a.controllers, buffer)
 }
 
-// AddSingletons register providers/service/repository
-func (a *Application) AddSingletons(name string, provider interface{}) {
+// AddSingleton register providers/service/repository
+func (a *Application) AddSingleton(name string, provider interface{}) {
 	for _, tag := range a.findTag(provider) {
 		result := a.findDependenciesByName(tag.Tag)
 		if result != nil {

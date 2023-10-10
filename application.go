@@ -21,8 +21,7 @@ type Tag struct {
 type Application struct {
 	Name string
 	IApplication
-	providers   []Dependency
-	components  []Dependency
+	singleton   []Dependency
 	controllers []Dependency
 	entries     []func()
 }
@@ -41,7 +40,7 @@ func (a *Application) AddEntries(entry func()) {
 // AddControllers register controller/resolver/consumer
 func (a *Application) AddControllers(name string, controller interface{}) {
 	for _, tag := range a.findTag(controller) {
-		result := a.findDepenciesByName(tag.Tag)
+		result := a.findDependenciesByName(tag.Tag)
 
 		if result != nil {
 			a.bind(controller, result, tag.Name)
@@ -54,10 +53,10 @@ func (a *Application) AddControllers(name string, controller interface{}) {
 	a.controllers = append(a.controllers, buffer)
 }
 
-// AddProviders register providers/service/repository
-func (a *Application) AddProviders(name string, provider interface{}) {
+// AddSingletons register providers/service/repository
+func (a *Application) AddSingletons(name string, provider interface{}) {
 	for _, tag := range a.findTag(provider) {
-		result := a.findDepenciesByName(tag.Tag)
+		result := a.findDependenciesByName(tag.Tag)
 		if result != nil {
 			a.bind(provider, result, tag.Name)
 		}
@@ -66,23 +65,13 @@ func (a *Application) AddProviders(name string, provider interface{}) {
 		Name:   name,
 		Inface: provider,
 	}
-	a.providers = append(a.providers, buffer)
+	a.singleton = append(a.singleton, buffer)
 }
 
-// AddComponents register dependencies
-func (a *Application) AddComponents(name string, component interface{}) {
-	buffer := Dependency{
-		Name:   name,
-		Inface: component,
-	}
-	a.components = append(a.components, buffer)
-}
-
-func (a *Application) findDepenciesByName(name string) interface{} {
-	merge := []Dependency{}
+func (a *Application) findDependenciesByName(name string) interface{} {
+	var merge []Dependency
 	merge = append(merge, GlobalDependencies...)
-	merge = append(merge, a.components...)
-	merge = append(merge, a.providers...)
+	merge = append(merge, a.singleton...)
 	var found Dependency
 
 	for _, dep := range merge {
